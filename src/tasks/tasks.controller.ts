@@ -8,25 +8,26 @@ import { Task } from './task.entity';
 
 @Controller('tasks')
 export class TasksController {
-    constructor(private taskService: TasksService) {}
+    constructor(private taskService: TasksService) { }
 
-    // @Get()
-    // getTasks(@Query() filterDto: GetTaskFiltersDto): Task[] {
-    //    return this.taskService.getTasksBySearch(filterDto)
-    // }
-    // @Patch('/:id/status')
-    // updateTaskStatus(@Param('id') id:string, @Body() updateTaskStatusDto:UpdateTaskStatusDto): Task {
-    //    const { status } = updateTaskStatusDto;
-    //     return this.taskService.updateATask(id, status);
-    // }
+    @Get()
+    getTasks(@Query() filterDto: GetTaskFiltersDto): Promise<Task[]> {
+       return this.taskService.getTasks(filterDto);
+    }
+    @Patch('/:id/status')
+    updateTaskStatus(@Param('id') id:string, @Body() updateTaskStatusDto:UpdateTaskStatusDto): Promise<Task> {
+       const { status } = updateTaskStatusDto;
+        return this.taskService.updateATask(id, status);
+    }
 
-    // @Delete('/:id')
-    // deleteTaskById(@Param('id') id: string) {
-    //     return this.taskService.deleteTaskById(id);
-    // }
+    @Delete('/:id')
+    async deleteTaskById(@Param('id') id: string) {
+
+        return this.taskService.deleteTaskById(id);
+    }
 
     @Get('/:id')
-    async getTaskById(@Param('id') id: string): Promise<Task>{
+    async getTaskById(@Param('id') id: string): Promise<Task> {
         return this.taskService.getTaskById(id);
     }
 

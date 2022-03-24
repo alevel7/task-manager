@@ -13,38 +13,33 @@ export class TasksService {
     constructor(
         @InjectRepository(Task) private taskRepo: Repository<Task>
     ) {}
-    // private tasks: Task[] = [];
 
-    // getAllTasks(): Task[] {
-    //     return this.tasks;
-    // }
+    async getTasks(filterDto: GetTaskFiltersDto): Promise<Task[]{
+        const {status, title} = filterDto;
 
-    // getTasksBySearch(filterDto: GetTaskFiltersDto): Task[] {
-    //     let tasks = [];
-    //     const {status, title} = filterDto;
-
-    //     if (status) {
-    //         tasks = this.tasks.filter(task => task.status == status);
-    //     }else if (title) {
-    //         tasks = this.tasks.filter(task => task.title.includes(title) || task.description.includes(title))
-    //     } else {
-    //         return this.getAllTasks()
-    //     }
-    //     return tasks;
-    // }
+        // if (status) {
+        //     tasks = this.tasks.filter(task => task.status status);
+        // }else if (title) {
+        //     tasks = this.tasks.filter(task => task.title.includes(title) || task.description.includes(title))
+        // } else {
+        //     return this.getAllTasks()
+        // }
+        // return tasks;
+    }
     
-    // updateATask(id: string, status: TaskStatus): Task {
-    //     const task: Task = this.getTaskById(id);
-    //     task.status = status;
-    //     return task;
+    async updateATask(id: string, status: TaskStatus): Promise<Task> {
+        const task: Task = await this.getTaskById(id);
+        task.status = status;
+        return task;
+    }
 
-    // }
+    async deleteTaskById(id: string): Promise<void>{
+        const result = await this.taskRepo.delete(id);
 
-    // deleteTaskById(id: string): Task[] | [] {
-    //     this.getTaskById(id)
-    //     this.tasks = this.tasks.filter( task => task.id !== id);
-    //     return this.tasks;
-    // }
+        if (result.affected === 0) {
+           throw new NotFoundException('Task Not found')
+        }
+    }
 
     async getTaskById(id: string): Promise<Task> {
       const found = await this.taskRepo.findOne({ where: {id}})
