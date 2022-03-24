@@ -2,15 +2,16 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { TaskStatus} from './task.interface';
 import { GetTaskFiltersDto } from './dto/get-task-filter.dto';
-import { TasksRepository } from './task.repository';
+// import { TasksRepository } from './task.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from './task.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TasksService { 
 
     constructor(
-        @InjectRepository(TasksRepository) private taskRepo: TasksRepository
+        @InjectRepository(Task) private taskRepo: Repository<Task>
     ) {}
     // private tasks: Task[] = [];
 
@@ -53,17 +54,15 @@ export class TasksService {
       return found
     }
 
-    // createTask(createTaskDto: CreateTaskDto): Task {
-    //     const {title, description } = createTaskDto;
-    //     const newTask : Task = {
-    //         id: uuid(),
-    //         title,
-    //         description,
-    //         status: TaskStatus.DONE
-    //     }
-    //     this.tasks.push(newTask);
-    //     return newTask;
-    // }
+    async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
+        const {title, description } = createTaskDto;
+        const task = this.taskRepo.create({
+            title, description, status: TaskStatus.PENDING
+        });
+
+        await this.taskRepo.save(task);
+        return task;
+    }
 
 
 }

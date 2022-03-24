@@ -27,11 +27,11 @@ export class TasksController {
 
     @Get('/:id')
     async getTaskById(@Param('id') id: string): Promise<Task>{
-        return await this.taskService.getTaskById(id);
+        return this.taskService.getTaskById(id);
     }
 
-    // @Post()
-    // createTask(@Body() createTaskDto: CreateTaskDto) {
-    //     return this.taskService.createTask(createTaskDto);
-    // }
+    @Post()
+    async createTask(@Body() createTaskDto: CreateTaskDto): Promise<Task> {
+        return this.taskService.createTask(createTaskDto);
+    }
 }
